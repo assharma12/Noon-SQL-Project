@@ -5,11 +5,13 @@
 
 ## Here are the queries for this projects 
 
-``` select * from orders ```
+```sql
+select * from orders ```
 
 # Top 3 outlets by cuisine without using top and  limit
 
-``` with order_count as(
+```sql
+ with order_count as(
 select  cuisine,Restaurant_id, count(*) as no_of_orders
 from orders
 group by cuisine,Restaurant_id
@@ -21,7 +23,8 @@ from order_count
 where rnk <=3 ```
 
 # Find the daily new customer count from the launch date (Every day how many new customers are we Acquiring)
-```  with cte as (
+```sql
+  with cte as (
 select customer_code,cast(min(placed_at) as date) as first_order_date
 from orders
 group by customer_code
@@ -34,7 +37,8 @@ order by first_order_date ```
 
 # 2nd solution
 
-```  WITH customer_first_orders AS (
+```sql
+  WITH customer_first_orders AS (
   SELECT
     customer_code,
     DATE(placed_at) AS order_date,
@@ -52,7 +56,8 @@ ORDER BY order_date ```
 # Count of all the users who were acquired in jan 2025 and only placed one order in jan
 # and did not placed any other order
 
-``` select customer_code,count(*) as no_of_orders
+```sql
+ select customer_code,count(*) as no_of_orders
 from orders
 where month(Placed_at) = 1 and year(Placed_at) = 2025 
 and Customer_code not in (select distinct customer_code 
@@ -64,7 +69,8 @@ having count(*)=1 ```
  # list all the customer with no order in last 7 day and were acquired one month ago with their first order on promo
 select* from orders
 
-``` with cte as( 
+```sql
+ with cte as( 
 select customer_code,min(placed_at) as first_order_date,max(placed_at) as Latest_order_date
 from orders 
 group by customer_code)
@@ -78,7 +84,8 @@ and orders.promo_code_name is not null ```
 # Growth team is planning to create a trigger that will target customers after thier every third order with a personalized
 # commnucation and they have asked you to create a query for this
 
-``` with cte as (
+```sql
+ with cte as (
 select *,
    row_number() over(partition by customer_code order by placed_at) as order_count
  from orders)
@@ -90,7 +97,8 @@ select *
 
  
 
-``` select customer_code,count(*) as no_of_orders,count(promo_code_name) as promo_count
+```sql
+ select customer_code,count(*) as no_of_orders,count(promo_code_name) as promo_count
 from orders
 where promo_code_name is not null
 group by customer_code
@@ -98,7 +106,8 @@ having count(*) >1 and count(*) = promo_count ```
 
 # What percantage of customers were organically  aquired in Jan 2025 (Placed thier first order without promo code)
 
-``` with cte as(
+```sql
+ with cte as(
 select *,
 row_number() over(partition by customer_code order by placed_at) as rn 
 from orders
